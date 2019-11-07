@@ -15,7 +15,7 @@ CREATE TABLE proj.local_publico (
 );
 
 CREATE TABLE proj.item (
-	id integer NOT NULL,
+	id serial,
 	descricao char(180) NOT NULL,
 	localizacao char(30) NOT NULL,	-- <- TODO verify
 	latitude numeric(8, 6) NOT NULL
@@ -30,7 +30,7 @@ CREATE TABLE proj.item (
 );
 
 CREATE TABLE proj.anomalia (
-	id integer NOT NULL, 
+	id serial, 
 	zona box NOT NULL, 	
 	imagem	char(100) NOT NULL,		-- link to image
 	lingua char(15) NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE proj.anomalia (
 );
 
 CREATE TABLE proj.anomalia_traducao (	-- Beware of IC_1 and IC_2
-	id integer NOT NULL,
+	id serial,
 	zona2 box NOT NULL, 
 	lingua2 char(15) NOT NULL,
 
