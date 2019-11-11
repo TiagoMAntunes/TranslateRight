@@ -4,13 +4,13 @@
 DROP SCHEMA proj CASCADE;
 CREATE SCHEMA  IF NOT EXISTS proj 
 	AUTHORIZATION ist189504; -- change to respective username
-	
+
 CREATE TABLE proj.local_publico (
-	latitude numeric(8, 6) NOT NULL 
-		CHECK(latitude >= -90 AND latitude <= 90),		
-	longitude numeric(9, 6) NOT NULL 
-		CHECK(longitude <= 180 AND longitude >= -180),
-	nome char(50) NOT NULL, 
+	latitude numeric(8, 6) NOT NULL,
+	longitude numeric(9, 6) NOT NULL, 
+	nome char(50) NOT NULL,
+	CHECK(latitude >= -90 AND latitude <= 90),	
+	CHECK(longitude <= 180 AND longitude >= -180),
 	PRIMARY KEY(latitude, longitude)
 );
 
@@ -18,10 +18,10 @@ CREATE TABLE proj.item (
 	id serial,
 	descricao char(180) NOT NULL,
 	localizacao char(30) NOT NULL,	-- <- TODO verify
-	latitude numeric(8, 6) NOT NULL
-		CHECK(latitude >= -90 AND latitude <= 90),
-	longitude numeric(9, 6) NOT NULL
-		CHECK (longitude <= 180 AND longitude >= -180), 
+	latitude numeric(8, 6) NOT NULL,
+	longitude numeric(9, 6) NOT NULL,
+	CHECK(latitude >= -90 AND latitude <= 90),
+	CHECK (longitude <= 180 AND longitude >= -180), 
 
 	FOREIGN KEY(latitude, longitude)
 		REFERENCES proj.local_publico
@@ -36,12 +36,13 @@ CREATE TABLE proj.anomalia (
 	lingua char(15) NOT NULL,
 	ts TIMESTAMP NOT NULL,
 	descricao char(180) NOT NULL,
-	tem_anomalia_redacao BOOLEAN NOT NULL,	
+	tem_anomalia_traducao BOOLEAN NOT NULL,	
 	PRIMARY KEY(id)
 );
 
+
 CREATE TABLE proj.anomalia_traducao (	-- Beware of IC_1 and IC_2
-	id serial,
+	id serial NOT NULL,	
 	zona2 box NOT NULL, 
 	lingua2 char(15) NOT NULL,
 
@@ -54,7 +55,8 @@ CREATE TABLE proj.anomalia_traducao (	-- Beware of IC_1 and IC_2
 CREATE TABLE proj.duplicado (	-- Beware of IC_3
 	item1 integer NOT NULL,	
 	item2 integer NOT NULL, 
-
+	CHECK (item1 < item2),
+	
 	FOREIGN KEY(item1)
 		REFERENCES proj.item
 		ON DELETE CASCADE,
@@ -107,11 +109,11 @@ CREATE TABLE proj.incidencia (
 
 CREATE TABLE proj.proposta_de_correcao (		-- Beware of IC_7
 	email char(50) NOT NULL,
-	nro integer NOT NULL
-		CHECK(nro >= 0),
+	nro integer NOT NULL,
 	data_hora TIMESTAMP NOT NULL,
 	texto VARCHAR(180) NOT NULL, 	-- It's possible to edit
-
+	CHECK(nro >= 0),
+	
 	FOREIGN KEY(email)
 		REFERENCES proj.utilizador
 		ON DELETE SET NULL,		-- <- verify
@@ -132,3 +134,6 @@ CREATE TABLE proj.correcao (
 		ON DELETE CASCADE,
 	PRIMARY KEY(email, nro, anomalia_id)
 );
+
+ALTER SEQUENCE proj.item_id_seq START WITH 1;
+ALTER SEQUENCE proj.anomalia_id_seq START WITH 1;
