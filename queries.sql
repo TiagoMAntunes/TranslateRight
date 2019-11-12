@@ -43,5 +43,32 @@ WHERE ur.email IN (
 	FROM n 
 	WHERE count IN (SELECT MAX(count) FROM n)
 );
+
 -- 3.
+WITH north AS (
+	SELECT DISTINCT email, item_id 
+	FROM proj.incidencia inc
+	INNER JOIN proj.item it
+	ON inc.item_id = it.id
+	WHERE it.latitude > 39.336775
+), year_north AS (
+	SELECT DISTINCT email, COUNT(DISTINCT item_id) n_items_north
+	FROM proj.incidencia inc
+	INNER JOIN proj.anomalia an
+	ON inc.anomalia_id = an.id
+	NATURAL JOIN north 
+	WHERE extract(year from an.ts) = 2019
+	GROUP BY email
+), n_north AS (
+	SELECT COUNT(DISTINCT item_id) count
+	FROM north
+)
+SELECT DISTINCT email, password
+FROM proj.utilizador ut
+NATURAL JOIN year_north yn
+WHERE yn.n_items_north IN (SELECT * FROM n_north)
+
+
 -- 4.
+
+
