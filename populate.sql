@@ -15,8 +15,7 @@ INSERT INTO proj.local_publico(latitude, longitude, nome)
 VALUES (38.778138, -9.135320, 'Aeroporto de Lisboa');
 
 INSERT INTO proj.local_publico(latitude, longitude, nome)
-VALUES (39.517208, -8.967171, 'Faculdade de Ciências e Tecnologia');
-
+VALUES (39.517208, -8.967171, 'Tasca do Chefe')
 
 -- populate utilizador
 INSERT INTO proj.utilizador(email, password)
