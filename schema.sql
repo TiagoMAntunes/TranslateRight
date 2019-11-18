@@ -2,8 +2,10 @@
 --CREATE DATABASE translate_right;
 
 DROP SCHEMA proj CASCADE;
-CREATE SCHEMA  IF NOT EXISTS proj 
-	AUTHORIZATION ist189504; -- change to respective username
+
+CREATE SCHEMA  IF NOT EXISTS proj;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA proj TO 
+	ist189504, ist189545, ist189469;
 
 CREATE TABLE proj.local_publico (
 	latitude numeric(8, 6) NOT NULL,
