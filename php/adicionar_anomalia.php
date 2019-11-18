@@ -7,31 +7,30 @@
         <td>Valor</td>
     </tr>
     <tr>
-        <td>ID</td>
-        <td><input id="ID"></td>
-    </tr>
-    <tr>
         <td>Zona</td>
-        <td><input id="zona"></td>
+        <td><input type="number" step="0.01" name="x1" placeholder="x1"></td>
+        <td><input type="number" step="0.01" name="y1" placeholder="y1"></td>
+        <td><input type="number" step="0.01" name="x2" placeholder="x2"></td>
+        <td><input type="number" step="0.01" name="y2" placeholder="y2"></td>
     </tr>
     <tr>
         <td>Imagem</td>
-        <td><input type="file" id="imagem"></td>
+        <td><input type="file" name="imagem"></td>
     </tr>
     <tr>
         <td>Lingua</td>
-        <td><input id="lingua"></td>
+        <td><input type="text" name="lingua"></td>
     </tr>
     <tr>
         <td>Descrição</td>
-        <td><input id="Descricao"></td>
+        <td><input type="text" name="descricao"></td>
     </tr>
     <tr>
         <td>Tem anomalia na tradução?</td>
-        <td><input type="checkbox" id="traducao"></td>
+        <td><input type="checkbox" name="traducao"></td>
     </tr>
     </table>
-    <button action="submit">Adicionar</button>
+    <input type="submit" value="Adicionar">
     </form>
 </body>
 </html>
