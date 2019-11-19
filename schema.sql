@@ -1,5 +1,4 @@
---DROP SCHEMA proj CASCADE;
-CREATE SCHEMA IF NOT EXISTS proj;
+
 /*
 DROP TABLE IF EXISTS
 	proj.local_publico,
@@ -15,10 +14,7 @@ DROP TABLE IF EXISTS
 	proj.proposta_de_correcao;
 */
 
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA proj TO 
-	ist189504, ist189545, ist189469;
-
-CREATE TABLE proj.local_publico (
+CREATE TABLE local_publico (
 	latitude numeric(8, 6) NOT NULL,
 	longitude numeric(9, 6) NOT NULL, 
 	nome varchar(120) NOT NULL,
@@ -27,7 +23,7 @@ CREATE TABLE proj.local_publico (
 	PRIMARY KEY(latitude, longitude)
 );
 
-CREATE TABLE proj.item (
+CREATE TABLE item (
 	id serial,
 	descricao varchar(1024) NOT NULL,
 	localizacao varchar(1024) NOT NULL,	-- <- TODO verify
@@ -37,12 +33,12 @@ CREATE TABLE proj.item (
 	CHECK (longitude <= 180 AND longitude >= -180), 
 
 	FOREIGN KEY(latitude, longitude)
-		REFERENCES proj.local_publico
+		REFERENCES local_publico
 		ON DELETE CASCADE,
 	PRIMARY KEY(id)
 );
 
-CREATE TABLE proj.anomalia (
+CREATE TABLE anomalia (
 	id serial, 
 	zona box NOT NULL, 	
 	imagem bytea NOT NULL,		-- link to image
@@ -54,73 +50,73 @@ CREATE TABLE proj.anomalia (
 );
 
 
-CREATE TABLE proj.anomalia_traducao (	-- Beware of IC_1 and IC_2
+CREATE TABLE anomalia_traducao (	-- Beware of IC_1 and IC_2
 	id serial,	
 	zona2 box NOT NULL, 
 	lingua2 varchar(120) NOT NULL,
 
 	FOREIGN KEY(id)
-		REFERENCES proj.anomalia
+		REFERENCES anomalia
 		ON DELETE CASCADE,
 	PRIMARY KEY(id)
 );
 
-CREATE TABLE proj.duplicado (	-- Beware of IC_3
+CREATE TABLE duplicado (	-- Beware of IC_3
 	item1 integer NOT NULL,	
 	item2 integer NOT NULL, 
 	CHECK (item1 < item2),
 	
 	FOREIGN KEY(item1)
-		REFERENCES proj.item
+		REFERENCES item
 		ON DELETE CASCADE,
 	FOREIGN KEY(item2)
-		REFERENCES proj.item
+		REFERENCES item
 		ON DELETE CASCADE,
 	PRIMARY KEY(item1, item2)
 );
 
-CREATE TABLE proj.utilizador (	-- Beware of IC_4
+CREATE TABLE utilizador (	-- Beware of IC_4
 	email varchar(120),
 	password varchar(30) NOT NULL,
 	PRIMARY KEY(email)
 );
 
-CREATE TABLE proj.utilizador_qualificado (	-- Beware of IC_5
+CREATE TABLE utilizador_qualificado (	-- Beware of IC_5
 	email varchar(120) NOT NULL,
 
 	FOREIGN KEY(email)
-		REFERENCES proj.utilizador
+		REFERENCES utilizador
 		ON DELETE CASCADE,
 	PRIMARY KEY(email)
 );
 
-CREATE TABLE proj.utilizador_regular ( 	-- Beware of IC_6
+CREATE TABLE utilizador_regular ( 	-- Beware of IC_6
 	email varchar(120) NOT NULL,
 
 	FOREIGN KEY(email)
-		REFERENCES proj.utilizador
+		REFERENCES utilizador
 		ON DELETE CASCADE,
 	PRIMARY KEY(email)
 );
 
-CREATE TABLE proj.incidencia (
+CREATE TABLE incidencia (
 	anomalia_id integer NOT NULL, 
 	item_id integer NOT NULL,
 	email varchar(120) NOT NULL,
 
 	FOREIGN KEY(anomalia_id)
-		REFERENCES proj.anomalia
+		REFERENCES anomalia
 		ON DELETE CASCADE,
 	FOREIGN KEY(item_id)
-		REFERENCES proj.item
+		REFERENCES item
 		ON DELETE CASCADE,
 	FOREIGN KEY(email)
-		REFERENCES proj.utilizador
+		REFERENCES utilizador
 		ON DELETE CASCADE,
 	PRIMARY KEY(anomalia_id)
 );
 
-CREATE TABLE proj.proposta_de_correcao (		-- Beware of IC_7
+CREATE TABLE proposta_de_correcao (		-- Beware of IC_7
 	email varchar(120) NOT NULL,
 	nro integer NOT NULL,
 	data_hora timestamp NOT NULL,
@@ -128,25 +124,25 @@ CREATE TABLE proj.proposta_de_correcao (		-- Beware of IC_7
 	CHECK(nro >= 0),
 	
 	FOREIGN KEY(email)
-		REFERENCES proj.utilizador
+		REFERENCES utilizador
 		ON DELETE SET NULL,		-- <- verify
 	PRIMARY KEY(email, nro)
 );
 
-CREATE TABLE proj.correcao (
+CREATE TABLE correcao (
 	email varchar(120) NOT NULL,
 	nro integer NOT NULL,
 	anomalia_id integer NOT NULL,
 	
 	FOREIGN KEY(email, nro)
-		REFERENCES proj.proposta_de_correcao
+		REFERENCES proposta_de_correcao
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
 	FOREIGN KEY(anomalia_id)
-		REFERENCES proj.incidencia
+		REFERENCES incidencia
 		ON DELETE CASCADE,
 	PRIMARY KEY(email, nro, anomalia_id)
 );
 
-ALTER SEQUENCE proj.item_id_seq START WITH 1;
-ALTER SEQUENCE proj.anomalia_id_seq START WITH 1;
+ALTER SEQUENCE item_id_seq START WITH 1;
+ALTER SEQUENCE anomalia_id_seq START WITH 1;
