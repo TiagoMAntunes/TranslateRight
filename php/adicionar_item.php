@@ -8,23 +8,23 @@
     </tr>
     <tr>
         <td>ID</td>
-        <td><input id="ID"></td>
+        <td><input type="text" name="ID"></td>
     </tr>
     <tr>
         <td>Descrição</td>
-        <td><input id="descricao"></td>
+        <td><input type="text"  name="descricao"></td>
     </tr>
     <tr>
         <td>Localização</td>
-        <td><input id="localizacao"></td>
+        <td><input type="text"  name="localizacao"></td>
     </tr>
     <tr>
         <td>Latitude</td>
-        <td><input id="latitude"></td>
+        <td><input type="text"  name="latitude"></td>
     </tr>
     <tr>
         <td>Longitude</td>
-        <td><input id="longitude"></td>
+        <td><input type="text"  name="longitude"></td>
     </tr>
     </table>
     <button action="submit">Adicionar</button>

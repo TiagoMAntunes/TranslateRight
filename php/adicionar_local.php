@@ -8,15 +8,15 @@
     </tr>
     <tr>
         <td>Latitude</td>
-        <td><input id="latitude"></td>
+        <td><input type="text" name="latitude"></td>
     </tr>
     <tr>
         <td>Longitude</td>
-        <td><input id="longitude"></td>
+        <td><input type="text" name="longitude"></td>
     </tr>
     <tr>
         <td>Nome</td>
-        <td><input id="nome"></td>
+        <td><input type="text" name="nome"></td>
     </tr>
     </table>
     <button action="submit">Adicionar</button>
