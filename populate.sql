@@ -15,7 +15,7 @@ INSERT INTO local_publico(latitude, longitude, nome)
 VALUES (38.778138, -9.135320, 'Aeroporto de Lisboa');
 
 INSERT INTO local_publico(latitude, longitude, nome)
-VALUES (39.517208, -8.967171, 'Tasca do Chefe')
+VALUES (39.517208, -8.967171, 'Tasca do Chefe');
 
 -- populate utilizador
 INSERT INTO utilizador(email, password)

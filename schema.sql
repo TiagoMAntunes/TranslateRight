@@ -1,18 +1,16 @@
-
-/*
 DROP TABLE IF EXISTS
-	proj.local_publico,
-	proj.item,
-	proj.anomalia,
-	proj.anomalia_traducao,
-	proj.duplicado,
-	proj.utilizador,
-	proj.utilizador_regular,
-	proj.utilizador_qualificado,
-	proj.incidencia,
-	proj.correcao,
-	proj.proposta_de_correcao;
-*/
+	local_publico,
+	item,
+	anomalia,
+	anomalia_traducao,
+	duplicado,
+	utilizador,
+	utilizador_regular,
+	utilizador_qualificado,
+	incidencia,
+	correcao,
+	proposta_de_correcao;
+
 
 CREATE TABLE local_publico (
 	latitude numeric(8, 6) NOT NULL,
