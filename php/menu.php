@@ -21,7 +21,7 @@
             <form action="adicionar_item.php">
                 <input type="submit" value="Inserir">
             </form>
-            <form action="">
+            <form action="remover_item.php">
                 <input type="submit" value="Remover">
             </form>
 

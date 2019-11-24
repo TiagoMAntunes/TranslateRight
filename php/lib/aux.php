@@ -1,5 +1,5 @@
 <?php
-
+	include 'lib/dbconnect.php';
 	function isBetween($a, $x, $y) {
 		return $a >= $x and $a <= $y;
 	}
@@ -10,6 +10,57 @@
 		$maxLongitude = 180;
 		$minLongitude = -180;
 		return isBetween($lat, $minLatitude, $maxLatitude) && isBetween($lon, $minLongitude, $maxLongitude);
+	}
+
+	function displayLocais() {
+    	$db = database_connect();
+    	$sql = "SELECT * FROM local_publico;";
+    	$result = $db->prepare($sql);
+    	$result->execute();
+
+    	echo("<p>Locais Públicos:</p>\n");
+    	echo("<table border=\"1\">\n");
+    	echo("<tr>\n
+    			<td>Latitude</td>\n
+    			<td>Longitude</td>\n
+    			<td>Nome</td>\n
+    		  </tr>\n");
+    	foreach ($result as $row) {
+    		echo("<tr>\n
+        			<td>{$row['latitude']}</td>\n
+        			<td>{$row['longitude']}</td>\n
+        			<td>{$row['nome']}</td>\n
+        		  </tr>\n");
+    	}
+    	echo("</table>");
+    	$db = null;
+	}
+	function displayItems() {
+    	$db = database_connect();
+    	$sql = "SELECT * FROM item;";
+    	$result = $db->prepare($sql);
+    	$result->execute();
+
+    	echo("<p>Items:</p>\n");
+    	echo("<table border=\"1\">\n");
+    	echo("<tr>\n
+    			<td>ID</td>\n
+    			<td>Descrição</td>\n
+    			<td>Localização</td>\n
+                <td>Latitude</td>\n
+                <td>Longitude</td>\n
+    		  </tr>\n");
+    	foreach ($result as $row) {
+    		echo("<tr>\n
+                    <td>{$row['id']}</td>\n
+                    <td>{$row['descricao']}</td>\n
+                    <td>{$row['localizacao']}</td>\n
+        			<td>{$row['latitude']}</td>\n
+        			<td>{$row['longitude']}</td>\n
+        		  </tr>\n");
+    	}
+    	echo("</table>");
+        $db = null;
 	}
 
 	function addLocal($lat, $lon, $name) {	
@@ -57,9 +108,6 @@
             catch (PDOException $e) {             
                 // if location already exists
                 echo($e->getMessage());
-                if ($e->getCode() == 23505) {
-                    echo("<p>Local público já existente! Tente outra vez.\n</p>");
-                }
             }
         }
         else {
@@ -110,6 +158,26 @@
         else {
         	echo("<p>Coordenadas inválidas. Tente outra vez.\n</p>");
         }
+	}
+
+	function removeItem($id) {
+		try {
+			$db = database_connect();
+			$sql = "DELETE FROM item WHERE id = ?;";
+			$result = $db->prepare($sql);
+			$data = array($id);
+			$result->execute($data);
+
+			if ($result->rowCount() == 0) {
+				echo("<p>ID inválido.</p>\n");
+			}
+			else {
+				echo("<p>Item removido com êxito.</p>\n");
+			}
+		}
+		catch(PDOException $e) {
+			echo($e->getMessage());
+		}
 	}
 
 	function formatZona($x1, $y1, $x2, $y2) {

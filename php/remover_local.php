@@ -4,27 +4,8 @@
         <h2>Remover Local:</h2>
 
         <?php
-        	include 'lib/dbconnect.php';
-        	$db = database_connect();
-        	$sql = "SELECT * FROM local_publico;";
-        	$result = $db->prepare($sql);
-        	$result->execute();
-
-        	echo("<p>Locais Públicos:</p>\n");
-        	echo("<table border=\"1\">\n");
-        	echo("<tr>\n
-        			<td>Latitude</td>\n
-        			<td>Longitude</td>\n
-        			<td>Nome</td>\n
-        		  </tr>\n");
-        	foreach ($result as $row) {
-        		echo("<tr>\n
-	        			<td>{$row['latitude']}</td>\n
-	        			<td>{$row['longitude']}</td>\n
-	        			<td>{$row['nome']}</td>\n
-	        		  </tr>\n");
-        	}
-        	echo("</table>")
+       	 	include 'lib/aux.php';
+        	displayLocais();
         ?>
         <p>Inserir coordenadas de local a remover:</p>
         <form action="" method="post">
