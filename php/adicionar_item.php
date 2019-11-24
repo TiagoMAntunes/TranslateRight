@@ -1,5 +1,7 @@
 <html>
 <body>
+    <h1>Translate Right</h1>
+    <h2>Inserir Item:</h2>
     <?php
         include 'lib/aux.php';
         include 'lib/dbconnect.php';
@@ -38,7 +40,7 @@
         <td><input type="number" step="0.000001" name="longitude" required></td>
     </tr>
     </table>
-    <input type="submit" value="Adicionar">
+    <input type="submit" value="Inserir">
     </form>
     <form action="menu.php">
         <input type="submit" value="Menu"/>

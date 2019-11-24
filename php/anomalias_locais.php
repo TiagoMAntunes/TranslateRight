@@ -1,7 +1,9 @@
 <html>
-
 <body>
-        <?php
+    <h1>Translate Right</h1>
+    <p>Selecione os 2 locais pretendidos:</p>
+
+    <?php
         include 'lib/dbconnect.php';
         $db = database_connect();
 
@@ -57,7 +59,11 @@
             }
             echo ("</table>\n");
         }
-        ?>
+    ?>
+    <p></p>
+    <form action="menu.php">
+        <input type="submit" value="Menu"/>
+    </form>
 </body>
 
 </html>

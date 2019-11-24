@@ -1,5 +1,8 @@
 <html>
 <body>
+    <h1>Translate Right</h1>
+    <h2>Inserir Local Público:</h2>
+
      <?php
         include 'lib/aux.php';
         include 'lib/dbconnect.php';
@@ -32,7 +35,7 @@
         <td><input type="text" name="nome" required></td>
     </tr>
     </table>
-    <input type="submit" value="Adicionar">
+    <input type="submit" value="Inserir">
     </form>
 
     <form action="menu.php">

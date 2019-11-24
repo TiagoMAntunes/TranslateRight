@@ -1,6 +1,9 @@
 <html>
 
 <body>
+	<h1>Translate Right</h1>
+    <h2>Utilizadores:</h2>
+
 	<?php
 
 	include './lib/dbconnect.php';
@@ -27,7 +30,10 @@
 	}
 
 	?>
-
+	<p></p>
+	<form action="menu.php">
+        <input type="submit" value="Menu"/>
+    </form>
 </body>
 
 </html>

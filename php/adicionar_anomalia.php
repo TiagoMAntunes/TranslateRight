@@ -16,6 +16,10 @@
             }
         }
     </script>
+
+    <h1>Translate Right</h1>
+    <h2>Inserir Anomalia:</h2>
+
     <?php
         include 'lib/aux.php';
         include 'lib/dbconnect.php';
@@ -80,7 +84,7 @@
         <td><input type='text' name='lingua2' required></td>
     </tr>
     </table>
-    <input type="submit" value="Adicionar">
+    <input type="submit" value="Inserir">
     </form>
     <form action="menu.php">
         <input type="submit" value="Menu"/>
