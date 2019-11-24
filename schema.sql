@@ -24,7 +24,7 @@ CREATE TABLE local_publico (
 CREATE TABLE item (
 	id serial,
 	descricao varchar(1024) NOT NULL,
-	localizacao varchar(1024) NOT NULL,	-- <- TODO verify
+	localizacao varchar(1024) NOT NULL,	
 	latitude numeric(8, 6) NOT NULL,
 	longitude numeric(9, 6) NOT NULL,
 	CHECK(latitude >= -90 AND latitude <= 90),
@@ -39,7 +39,7 @@ CREATE TABLE item (
 CREATE TABLE anomalia (
 	id serial, 
 	zona box NOT NULL, 	
-	imagem bytea NOT NULL,		-- link to image
+	imagem bytea NOT NULL,		
 	lingua varchar(120) NOT NULL,
 	ts timestamp NOT NULL,
 	descricao varchar(1024) NOT NULL,
