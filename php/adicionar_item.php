@@ -1,33 +1,47 @@
 <html>
 <body>
-    <form action=".item_submit.php" method="post">
+    <?php
+        include 'lib/aux.php';
+        include 'lib/dbconnect.php';
+
+        if (isset($_POST["latitude"]) && isset($_POST["longitude"]) && isset($_POST["descricao"]) && isset($_POST['localizacao'])) {
+            $lat = sprintf("%.6f", $_POST["latitude"]);
+            $lon = sprintf("%.6f", $_POST["longitude"]);
+            $desc = $_POST["descricao"];
+            $loc = $_POST["localizacao"];
+
+            addItem($desc, $loc, $lat, $lon);
+        }
+        
+    ?>
+
+    <form action="" method="post">
     <table>
     <tr>
         <td>Nome</td>
         <td>Valor</td>
     </tr>
     <tr>
-        <td>ID</td>
-        <td><input type="text" name="ID"></td>
-    </tr>
-    <tr>
         <td>Descrição</td>
-        <td><input type="text"  name="descricao"></td>
+        <td><input type="text"  name="descricao" required></td>
     </tr>
     <tr>
         <td>Localização</td>
-        <td><input type="text"  name="localizacao"></td>
+        <td><input type="text"  name="localizacao" required></td>
     </tr>
     <tr>
         <td>Latitude</td>
-        <td><input type="text"  name="latitude"></td>
+        <td><input type="number" step="0.000001" name="latitude" required></td>
     </tr>
     <tr>
         <td>Longitude</td>
-        <td><input type="text"  name="longitude"></td>
+        <td><input type="number" step="0.000001" name="longitude" required></td>
     </tr>
     </table>
-    <button action="submit">Adicionar</button>
+    <input type="submit" value="Adicionar">
+    </form>
+    <form action="menu.php">
+        <input type="submit" value="Menu"/>
     </form>
 </body>
 </html>
