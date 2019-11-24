@@ -37,6 +37,36 @@
         }
 	}
 
+	function removeLocal($lat, $lon) {
+		if (validCoordinates($lat, $lon)) {
+			try {
+                $db = database_connect();
+                $sql = "DELETE FROM local_publico WHERE latitude = ? AND longitude = ?;";
+                $result = $db->prepare($sql);
+                $data = array($lat, $lon);
+                $result->execute($data);
+                $db = null;
+
+                if ($result->rowCount() == 0) {
+                	echo("<p>Não existe nenhum local com as coordenadas (".$lat.", ".$lon.").</p>\n");
+                }
+                else {
+                	echo("<p>Local público removido com êxito!\n</p>");
+                } 
+            }
+            catch (PDOException $e) {             
+                // if location already exists
+                echo($e->getMessage());
+                if ($e->getCode() == 23505) {
+                    echo("<p>Local público já existente! Tente outra vez.\n</p>");
+                }
+            }
+        }
+        else {
+        	echo("<p>Coordenadas inválidas. Tente outra vez.\n</p>");
+        }
+	}
+
 	function hasDuplicates($lat, $lon) {
 		$db = database_connect();
 		$sql = "SELECT id FROM item WHERE latitude=? AND longitude=? ORDER BY id DESC;";

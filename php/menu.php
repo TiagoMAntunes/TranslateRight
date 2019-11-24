@@ -13,7 +13,7 @@
             <form action="adicionar_local.php">
                 <input type="submit" value="Inserir">
             </form>
-            <form action="">
+            <form action="remover_local.php">
                 <input type="submit" value="Remover">
             </form>
 
