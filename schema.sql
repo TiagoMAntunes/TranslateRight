@@ -49,7 +49,7 @@ CREATE TABLE anomalia (
 
 
 CREATE TABLE anomalia_traducao (	-- Beware of IC_1 and IC_2
-	id serial,	
+	id integer,	
 	zona2 box NOT NULL, 
 	lingua2 varchar(120) NOT NULL,
 

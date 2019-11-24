@@ -10,9 +10,9 @@
             $name = $_POST["nome"];
 
             addLocal($lat, $lon, $name);
-        }
-        
+        }   
     ?>
+
     <form action="" method="post">
     <table>
     <tr>

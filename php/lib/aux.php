@@ -81,4 +81,70 @@
         	echo("<p>Coordenadas inválidas. Tente outra vez.\n</p>");
         }
 	}
+
+	function formatZona($x1, $y1, $x2, $y2) {
+		return '(('.$x1.','.$y1.'),('.$x2.','.$y2.'))';
+	}
+
+	function insertAnomalia($db, $zona, $img, $lingua, $desc, $trad) {
+		$sql = "INSERT INTO anomalia(zona, imagem, lingua, ts, descricao, tem_anomalia_traducao)
+                VALUES (?, ?, ?, ?, ?, ?);";
+        $result = $db->prepare($sql);
+        $data = array($zona, $img, $lingua, date("Y-m-d H:i:s"), $desc, $trad);
+        $result->execute($data);
+	}
+
+	function addAnomalia($zona, $img, $lingua, $desc, $trad) {
+		try {
+	        $db = database_connect();
+	        insertAnomalia($db, $zona, $img, $lingua, $desc, $trad);
+	        echo("<p>Anomalia de redação adicionada com êxito!</p>\n");
+ 
+	        $db = null;
+	    }
+	    catch (PDOException $e) {             
+	        echo $e->getMessage();
+	    }
+	}
+
+	function overlap($x1, $y1, $x2, $y2, $x1_2, $y1_2, $x2_2, $y2_2) {
+		return !($x1 > $x2_2 || $x1_2 > $x2 || $y1 > $y2_2 || $y1_2 > $y2);
+	}
+
+	function addAnomaliaTraducao($zona, $img, $lingua, $desc, $trad, $zona2, $lingua2) {
+		try {
+			$db = database_connect();
+			$db->beginTransaction();
+			if ($lingua != $lingua2) {
+				if (!overlap($_POST['x1'], $_POST['y1'], $_POST['x2'], $_POST['y2'],
+					$_POST['x1_2'], $_POST['y1_2'], $_POST['x2_2'], $_POST['y2_2'])) {
+					insertAnomalia($db, $zona, $img, $lingua, $desc, $trad);
+
+			        $sql = "INSERT INTO anomalia_traducao(id, zona2, lingua2)
+			                VALUES (?, ?, ?);";
+
+			        $result = $db->prepare($sql);		
+			        $data = array($db->lastInsertId("anomalia_id_seq"), $zona2, $lingua2);
+			        $result->execute($data);
+			        $db->commit(); 
+
+			        echo("<p>Anomalia de tradução adicionada com êxito!</p>\n");
+			        $db = null;
+				}
+				else {
+					echo("<p>'Zona' e 'Zona 2' não se devem sobrepor. ");
+					echo("Tente outra vez.</p>\n");
+				}
+			}
+			else {
+				echo("<p>Os campos 'Língua' e 'Língua 2' devem ser diferentes. ");
+				echo("Tente outra vez.</p>\n");
+			}
+	    }
+	    catch (PDOException $e) {
+	    	echo $e->getMessage();
+	    	$db->rollbak();
+	    }
+
+	}
 ?>
