@@ -3,19 +3,6 @@
     <h1>Translate Right</h1>
     <h2>Inserir Local Público:</h2>
 
-     <?php
-        include 'lib/aux.php';
-        include 'lib/dbconnect.php';
-
-        if (isset($_POST["latitude"]) && isset($_POST["longitude"]) && isset($_POST["nome"])) {
-            $lat = sprintf("%.6f", $_POST["latitude"]);
-            $lon = sprintf("%.6f", $_POST["longitude"]);
-            $name = $_POST["nome"];
-
-            addLocal($lat, $lon, $name);
-        }   
-    ?>
-
     <form action="" method="post">
     <table>
     <tr>
@@ -41,5 +28,18 @@
     <form action="menu.php">
         <input type="submit" value="Menu"/>
     </form>
+    
+    <?php
+        include 'lib/aux.php';
+        include 'lib/dbconnect.php';
+
+        if (isset($_POST["latitude"]) && isset($_POST["longitude"]) && isset($_POST["nome"])) {
+            $lat = sprintf("%.6f", $_POST["latitude"]);
+            $lon = sprintf("%.6f", $_POST["longitude"]);
+            $name = $_POST["nome"];
+
+            addLocal($lat, $lon, $name);
+        }   
+    ?>
 </body>
 </html>
