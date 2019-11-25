@@ -139,6 +139,32 @@
 	    }
 	}
 
+	function displayPropostasCorrecao() {
+    	$db = database_connect();
+    	$sql = "SELECT * FROM proposta_de_correcao;";
+    	$result = $db->prepare($sql);
+    	$result->execute();
+
+    	echo("<p>Propostas de Correção:</p>\n");
+    	echo("<table border=\"1\">\n");
+    	echo("<tr>\n
+    			<td>Email</td>\n
+    			<td>Nro</td>\n
+    			<td>Timestamp</td>\n
+                <td>Texto</td>\n
+    		  </tr>\n");
+    	foreach ($result as $row) {
+    		echo("<tr>\n
+                    <td>{$row['email']}</td>\n
+                    <td>{$row['nro']}</td>\n
+                    <td>{$row['data_hora']}</td>\n
+        			<td>{$row['texto']}</td>\n
+        		  </tr>\n");
+    	}
+    	echo("</table>");
+        $db = null;
+	}
+
 	function addLocal($lat, $lon, $name) {	
 		if (validCoordinates($lat, $lon)) {
             try {
@@ -413,11 +439,33 @@
 			}
 
 			else{
-				echo("<p>Não existe nenhuma anomalia com o ID dado.</p>\n");
+				echo("<p>Não existe nenhuma anomalia com o ID ".$id.".</p>\n");
 			}
 		}
 		else{
-			echo("<p>Não existe nenhum Utilizador Certificado com o email dado.</p>\n");
+			echo("<p>Não existe nenhum Utilizador Certificado com o email ".$email.".</p>\n");
+		}
+	}
+
+	function removePropCorrecao($email, $nro){
+		try {
+			$db = database_connect();
+			$sql = "DELETE FROM proposta_de_correcao 
+					WHERE email = ? AND nro = ?;";
+			$result = $db->prepare($sql);
+			$data = array($email, $nro);
+			$result->execute($data);
+			$db = null;
+
+			if ($result->rowCount() == 0) {
+				echo("<p>Não existe nenhuma Proposta de Correção com o email ".$email." e o nro ".$nro.".</p>\n");
+			}
+			else {
+				echo("<p>Proposta de Correção removida com êxito.</p>\n");
+			}
+		}
+		catch(PDOException $e) {
+			echo($e->getMessage());
 		}
 	}
 ?>
