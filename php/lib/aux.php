@@ -1,5 +1,5 @@
 <?php
-	include 'lib/dbconnect.php';
+	include_once 'lib/dbconnect.php';
 
 	function isBetween($a, $x, $y) {
 		return $a >= $x and $a <= $y;
@@ -11,6 +11,16 @@
 		$maxLongitude = 180;
 		$minLongitude = -180;
 		return isBetween($lat, $minLatitude, $maxLatitude) && isBetween($lon, $minLongitude, $maxLongitude);
+	}
+
+	function makeArray($info) {
+		$final = array();
+		$i = 0;
+		foreach ($info as $row) {
+			$final[$i] = $row;
+			$i = $i + 1;
+		}
+		return $final;
 	}
 
 	function displayLocais() {
@@ -84,7 +94,7 @@
                 <td>Zona 2</td>\n
                 <td>Língua 2</td>\n
     		  </tr>\n");
-    	
+
     	foreach ($result as $row) {
     		echo("<tr>\n
                     <td>{$row['id']}</td>\n

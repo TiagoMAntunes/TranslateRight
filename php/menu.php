@@ -51,7 +51,7 @@
             </form>
 
             <p>Registar:</p>
-            <form action="">
+            <form action="registar_incidencia.php">
                 <input type="submit" value="Incidência">
             </form>
             <form action="">
