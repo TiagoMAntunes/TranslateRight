@@ -40,7 +40,7 @@
             </form>
 
             <p>Proposta de Correção:</p>
-            <form action="">
+            <form action="adicionar_prop_correcao.php">
                 <input type="submit" value="Inserir">
             </form>
             <form action="">

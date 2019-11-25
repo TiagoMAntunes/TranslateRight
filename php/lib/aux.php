@@ -13,6 +13,26 @@
 		return isBetween($lat, $minLatitude, $maxLatitude) && isBetween($lon, $minLongitude, $maxLongitude);
 	}
 
+	function anomaliaExists($db, $id){
+		$sql = "SELECT id FROM anomalia
+				WHERE id=?;";
+		$result = $db->prepare($sql);
+		$data = array($id);
+		$result->execute($data);
+
+		return $result->rowCount() > 0;
+	}
+
+	function isQualifiedUser($db, $email){
+		$sql = "SELECT email FROM utilizador_qualificado
+				WHERE email=?;";
+		$result = $db->prepare($sql);
+		$data = array($email);
+		$result->execute($data);
+
+		return $result->rowCount() > 0;
+	}
+
 	function makeArray($info) {
 		$final = array();
 		$i = 0;
@@ -352,5 +372,52 @@
 			echo($e->getMessage());
 		}
 
+	}
+
+	function addPropCorrecao($email, $id, $text){
+		try{
+			$db = database_connect();
+			$sql = "SELECT email
+					FROM proposta_de_correcao
+					WHERE email=?;";
+			$result = $db->prepare($sql);
+			$data = array($email);
+			$result->execute($data);
+			$count = $result->rowCount() + 1;
+
+			insertPropCorrecao($db, $email, $count, $id, $text);
+
+			$db = null;
+		}
+		catch (PDOException $e) {
+			echo($e->getMessage());
+		}
+	}
+
+	function insertPropCorrecao($db, $email, $count, $id, $text){
+		if(isQualifiedUser($db, $email)){
+			if(anomaliaExists($db, $id)){
+				$sql = "INSERT INTO proposta_de_correcao(email, nro, data_hora, texto)
+						VALUES (?, ?, ?, ?);";
+				$result = $db->prepare($sql);
+				$data = array($email, $count, date("Y-m-d H:i:s"), $text);
+				$result->execute($data);
+					
+				$sql = "INSERT INTO correcao(email, nro, anomalia_id)
+						VALUES (?, ?, ?);";
+				$result = $db->prepare($sql);
+				$data = array($email, $count, $id);
+				$result->execute($data);
+
+				echo("<p>Proposta de correção adicionada com êxito!\n</p>");
+			}
+
+			else{
+				echo("<p>Não existe nenhuma anomalia com o ID dado.</p>\n");
+			}
+		}
+		else{
+			echo("<p>Não existe nenhum Utilizador Certificado com o email dado.</p>\n");
+		}
 	}
 ?>
