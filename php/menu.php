@@ -29,7 +29,7 @@
             <form action="adicionar_anomalia.php">
                 <input type="submit" value="Inserir">
             </form>
-            <form action="">
+            <form action="remover_anomalia.php">
                 <input type="submit" value="Remover">
             </form>
             <form action="anomalias_locais.php">
