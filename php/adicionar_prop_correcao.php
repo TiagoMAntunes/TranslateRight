@@ -20,7 +20,7 @@
             </tr>
             <tr>
                 <td>Email do utilizador</td>
-                <td><input type="text" name="email" required></td>
+                <td><input type="text" name="email" maxlength="120" required></td>
             </tr>
             <tr>
                 <td>ID da anomalia a corrigir</td>
@@ -28,7 +28,7 @@
             </tr>
             <tr>
                 <td>Texto da correção</td>
-                <td><input type="text" name="texto" required></td>
+                <td><input type="text" name="texto" maxlength="1024" required></td>
             </tr>
         </table>
         <input type="submit" value="Inserir">

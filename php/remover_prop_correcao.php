@@ -16,7 +16,7 @@
         	<table>
 	        	<tr>
 	        		<td>Email:</td>
-	        		<td><input type="text" name="email" required></td>
+	        		<td><input type="text" name="email" maxlength="120" required></td>
 	        	</tr>
                 <tr>
 	        		<td>Nro:</td>
