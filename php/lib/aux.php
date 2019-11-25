@@ -104,7 +104,6 @@
 	        			<td>{$row['descricao']}</td>\n");
 
 	        	if ($row['tem_anomalia_traducao']) {
-
 	        		echo("<td>SIM</td>\n
 	        			  <td>{$row['zona2']}</td>\n
 	        			  <td>{$row['lingua2']}</td>\n");
@@ -323,26 +322,27 @@
 		}
 	}
 
-	function listarAnomaliasRecentes($lat, $lon) {
+	function listarAnomaliasRecentes($lat, $lon, $dlat, $dlon) {
 		try {
 			$db = database_connect();
 			$sql = "WITH anoms_aux AS (
-				      SELECT * FROM anomalia
-				      NATURAL JOIN incidencia inc 
-				      NATURAL JOIN item it
-				      WHERE (latitude = ? AND longitude = ?) OR
-				      (latitude = ? AND longitude = ?) OR
-				      (latitude = ? AND longitude = ?) OR
-				      (latitude = ? AND longitude = ?)
+					  SELECT anom.id, zona, imagem, lingua, ts, anom.descricao, tem_anomalia_traducao
+					  FROM anomalia anom
+					  INNER JOIN incidencia inc 
+					  ON anom.id = inc.anomalia_id
+					  INNER JOIN item it
+					  ON it.id = inc.item_id
+				      WHERE (latitude BETWEEN ? AND ?) AND 
+				      (longitude BETWEEN ? AND ?)
 					)
-					SELECT * FROM anoms_aux
-					LEFT JOIN anomalia_traducao
-					ON anoms_aux.id = anomalia_traducao.id
+					SELECT * FROM anoms_aux aa
+					LEFT JOIN anomalia_traducao at
+					ON aa.id = at.id
 					WHERE DATE(ts) > CURRENT_DATE - INTERVAL '3 months'
-					ORDER BY anoms_aux.id ASC;";
+					ORDER BY aa.id ASC;";
 
 			$result = $db->prepare($sql);
-			$data = array($lat, $lon, $lat, -$lon, -$lat, $lon, -$lat, -$lon);
+			$data = array($lat - $dlat, $lat + $dlat, $lon - $dlon, $lon + $dlon);
 			$result->execute($data);
 
 			displayAnomalias($result);
