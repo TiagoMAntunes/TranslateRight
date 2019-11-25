@@ -35,7 +35,7 @@
             <form action="anomalias_locais.php">
                 <input type="submit" value="Listar dados 2 locais">
             </form>
-            <form action="">
+            <form action="listar_ultimas_anomalias.php">
                 <input type="submit" value="Listar dos últimos 3 meses">
             </form>
 

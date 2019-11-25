@@ -75,49 +75,49 @@
         $db = null;
 	}
 
-	function displayAnomalias() {
-		$db = database_connect();
-    	$sql = "SELECT * FROM anomalia a LEFT JOIN anomalia_traducao at ON a.id = at.id ORDER BY a.id ASC;";
-    	$result = $db->prepare($sql);
-    	$result->execute();
+	function displayAnomalias($result) {
+		if ($result->rowCount() == 0) {
+			echo("<p>Não há anomalias nas condições referidas.</p>\n");
+		}
+		else {
+	    	echo("<p>Anomalias:</p>\n");
+	    	echo("<table border=\"1\">\n");
+	    	echo("<tr>\n
+	    			<td>ID</td>\n
+	    			<td>Zona</td>\n
+	    			<td>Imagem</td>\n
+	                <td>Língua</td>\n
+	                <td>Timestamp</td>\n
+	                <td>Descrição</td>\n
+	                <td>Anomalia de Tradução?</td>\n
+	                <td>Zona 2</td>\n
+	                <td>Língua 2</td>\n
+	    		  </tr>\n");
 
-    	echo("<p>Anomalias:</p>\n");
-    	echo("<table border=\"1\">\n");
-    	echo("<tr>\n
-    			<td>ID</td>\n
-    			<td>Zona</td>\n
-    			<td>Imagem</td>\n
-                <td>Língua</td>\n
-                <td>Timestamp</td>\n
-                <td>Descrição</td>\n
-                <td>Anomalia de Tradução?</td>\n
-                <td>Zona 2</td>\n
-                <td>Língua 2</td>\n
-    		  </tr>\n");
+	    	foreach ($result as $row) {
+	    		echo("<tr>\n
+	                    <td>{$row['id']}</td>\n
+	                    <td>{$row['zona']}</td>\n
+	                    <td>{$row['imagem']}</td>\n
+	                    <td>{$row['lingua']}</td>\n
+	        			<td>{$row['ts']}</td>\n
+	        			<td>{$row['descricao']}</td>\n");
 
-    	foreach ($result as $row) {
-    		echo("<tr>\n
-                    <td>{$row['id']}</td>\n
-                    <td>{$row['zona']}</td>\n
-                    <td>{$row['imagem']}</td>\n
-                    <td>{$row['lingua']}</td>\n
-        			<td>{$row['ts']}</td>\n
-        			<td>{$row['descricao']}</td>\n");
+	        	if ($row['tem_anomalia_traducao']) {
 
-        	if ($row['tem_anomalia_traducao']) {
+	        		echo("<td>SIM</td>\n
+	        			  <td>{$row['zona2']}</td>\n
+	        			  <td>{$row['lingua2']}</td>\n");
+	        	}
+	        	else {
+	        		echo("<td>NÃO</td>\n");
+	        	}
 
-        		echo("<td>SIM</td>\n
-        			  <td>{$row['zona2']}</td>\n
-        			  <td>{$row['lingua2']}</td>\n");
-        	}
-        	else {
-        		echo("<td>NÃO</td>\n");
-        	}
-
-        	echo("</tr>\n");
-    	}
-    	echo("</table>");
-        $db = null;
+	        	echo("</tr>\n");
+	    	}
+	    	echo("</table>");
+	        $db = null;
+	    }
 	}
 
 	function addLocal($lat, $lon, $name) {	
@@ -309,6 +309,7 @@
 			$result = $db->prepare($sql);
 			$data = array($id);
 			$result->execute($data);
+			$db = null;
 
 			if ($result->rowCount() == 0) {
 				echo("<p>ID inválido.</p>\n");
@@ -320,5 +321,36 @@
 		catch(PDOException $e) {
 			echo($e->getMessage());
 		}
+	}
+
+	function listarAnomaliasRecentes($lat, $lon) {
+		try {
+			$db = database_connect();
+			$sql = "WITH anoms_aux AS (
+				      SELECT * FROM anomalia
+				      NATURAL JOIN incidencia inc 
+				      NATURAL JOIN item it
+				      WHERE (latitude = ? AND longitude = ?) OR
+				      (latitude = ? AND longitude = ?) OR
+				      (latitude = ? AND longitude = ?) OR
+				      (latitude = ? AND longitude = ?)
+					)
+					SELECT * FROM anoms_aux
+					LEFT JOIN anomalia_traducao
+					ON anoms_aux.id = anomalia_traducao.id
+					WHERE DATE(ts) > CURRENT_DATE - INTERVAL '3 months'
+					ORDER BY anoms_aux.id ASC;";
+
+			$result = $db->prepare($sql);
+			$data = array($lat, $lon, $lat, -$lon, -$lat, $lon, -$lat, -$lon);
+			$result->execute($data);
+
+			displayAnomalias($result);
+			$db = null;
+		}
+		catch (PDOException $e) {
+			echo($e->getMessage());
+		}
+
 	}
 ?>

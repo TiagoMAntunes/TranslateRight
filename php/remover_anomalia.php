@@ -5,7 +5,11 @@
 
         <?php
        	 	include 'lib/aux.php';
-        	displayAnomalias();
+            $db = database_connect();
+            $sql = "SELECT * FROM anomalia a LEFT JOIN anomalia_traducao at ON a.id = at.id ORDER BY a.id ASC;";
+            $result = $db->prepare($sql);
+            $result->execute();
+        	displayAnomalias($result);
         ?>
         <p>Inserir ID da anomalia a remover:</p>
         <form action="" method="post">
