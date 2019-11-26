@@ -1,7 +1,7 @@
 <html>
     <body>
         <h1>Translate Right</h1>
-        <h2>Remover Proposta de Correção:</h2>
+        <h2>Editar Proposta de Correção:</h2>
 
         <?php
        	 	include 'lib/aux.php';
@@ -11,7 +11,7 @@
             $result->execute();
         	displayPropostasCorrecao($result);
         ?>
-        <p>Inserir email e nro da proposta de correção a remover:</p>
+        <p>Inserir informação da proposta de correção a editar:</p>
         <form action="" method="post">
         	<table>
 	        	<tr>
@@ -22,16 +22,20 @@
 	        		<td>Nro:</td>
 	        		<td><input type="number" step="1" name="nro" required></td>
 	        	</tr>
+                <tr>
+	        		<td>Novo texto da proposta de correção:</td>
+	        		<td><input type="text" name="texto" maxlength="1024" required></td>
+	        	</tr>
 	        </table>
-	        <input type="submit" value="Remover">
+	        <input type="submit" value="Submeter alterações">
 		</form>
         <form action="menu.php">
         	<input type="submit" value="Menu">
         </form>
 
         <?php
-        	if (isset($_POST['email']) && isset($_POST['nro'])) {
-            	removePropCorrecao($_POST['email'], $_POST['nro']);
+        	if (isset($_POST['email']) && isset($_POST['nro']) && isset($_POST['texto'])) {
+            	editPropCorrecao($_POST['email'], $_POST['nro'], $_POST['texto']);
         	}
         ?>
     </body>

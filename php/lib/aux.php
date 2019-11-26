@@ -23,6 +23,16 @@
 		return $result->rowCount() > 0;
 	}
 
+	function propCorrecaoExists($db, $email, $nro){
+		$sql = "SELECT * FROM proposta_de_correcao
+				WHERE email=? AND nro=?;";
+		$result = $db->prepare($sql);
+		$data = array($email, $nro);
+		$result->execute($data);
+
+		return $result->rowCount() > 0;
+	}
+
 	function isQualifiedUser($db, $email){
 		$sql = "SELECT email FROM utilizador_qualificado
 				WHERE email=?;";
@@ -31,6 +41,17 @@
 		$result->execute($data);
 
 		return $result->rowCount() > 0;
+	}
+
+	function getNro($db, $email){
+		$sql = "SELECT email
+				FROM proposta_de_correcao
+				WHERE email=?;";
+		$result = $db->prepare($sql);
+		$data = array($email);
+		$result->execute($data);
+
+		return $result->rowCount() + 1;
 	}
 
 	function makeArray($info) {
@@ -403,13 +424,7 @@
 	function addPropCorrecao($email, $id, $text){
 		try{
 			$db = database_connect();
-			$sql = "SELECT email
-					FROM proposta_de_correcao
-					WHERE email=?;";
-			$result = $db->prepare($sql);
-			$data = array($email);
-			$result->execute($data);
-			$count = $result->rowCount() + 1;
+			$count = getNro($db, $email);
 
 			insertPropCorrecao($db, $email, $count, $id, $text);
 
@@ -455,14 +470,62 @@
 			$result = $db->prepare($sql);
 			$data = array($email, $nro);
 			$result->execute($data);
-			$db = null;
-
+			
 			if ($result->rowCount() == 0) {
 				echo("<p>Não existe nenhuma Proposta de Correção com o email ".$email." e o nro ".$nro.".</p>\n");
 			}
 			else {
+				refreshNros($db, $email);
 				echo("<p>Proposta de Correção removida com êxito.</p>\n");
 			}
+
+			$db = null;
+		}
+		catch(PDOException $e) {
+			echo($e->getMessage());
+		}
+	}
+
+	function refreshNros($db, $email){
+		$count = getNro($db, $email);
+		$i = 1;
+		$nro = 1;
+
+		while($i <= $count){
+			if(propCorrecaoExists($db, $email, $i)){
+				$sql = "UPDATE proposta_de_correcao 
+						SET nro = ?
+						WHERE email = ? AND nro = ?;";
+				$result = $db->prepare($sql);
+				$data = array($nro, $email, $i);
+				$result->execute($data);
+
+				$nro = $nro + 1;
+			}
+			$i = $i + 1;
+		}
+	}
+
+	function editPropCorrecao($email, $nro, $text){
+		try{
+			$db = database_connect();
+
+			if (!propCorrecaoExists($db, $email, $nro)) {
+				echo("<p>Não existe nenhuma Proposta de Correção com o email ".$email." e o nro ".$nro.".</p>\n");
+			}
+
+			else{
+				$sql = "UPDATE proposta_de_correcao 
+						SET texto = ?, data_hora = ?
+						WHERE email = ? AND nro = ?;";
+				$result = $db->prepare($sql);
+				$data = array($text, date("Y-m-d H:i:s"), $email, $nro);
+				$result->execute($data);
+
+				echo("<p>Proposta de Correção editada com êxito.</p>\n");
+			}
+
+			$db = null;
 		}
 		catch(PDOException $e) {
 			echo($e->getMessage());

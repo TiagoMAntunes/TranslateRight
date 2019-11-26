@@ -46,7 +46,7 @@
             <form action="remover_prop_correcao.php">
                 <input type="submit" value="Remover">
             </form>
-            <form action="">
+            <form action="editar_prop_correcao.php">
                 <input type="submit" value="Editar">
             </form>
 
