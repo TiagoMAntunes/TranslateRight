@@ -417,7 +417,6 @@
 
 	function removePropCorrecao($email, $nro){
 		try {
-			echo($email);
 			$db = database_connect();
 			$db->beginTransaction();
 			$sql = "DELETE FROM proposta_de_correcao 
@@ -439,13 +438,11 @@
 
 	function refreshNros($db, $email){
 		$count = getNro($db, $email);
-		echo($email);
 		$i = 1;
 		$nro = 1;
 		echo($count);
 		while($i <= $count){
 			if(propCorrecaoExists($db, $email, $i)){
-				echo "here";
 				$sql = "UPDATE proposta_de_correcao 
 						SET nro = ?
 						WHERE email = ? AND nro = ?;";

@@ -15,12 +15,24 @@
         <form action="" method="post">
         	<table>
 	        	<tr>
-	        		<td>Email:</td>
-	        		<td><input type="text" name="email" maxlength="120" required></td>
-	        	</tr>
-                <tr>
-	        		<td>Nro:</td>
-	        		<td><input type="number" step="1" name="nro" required></td>
+                    <td>Email e nro:</td>
+                    <td>
+                        <?php
+                            $db = database_connect();
+                            $sql = "SELECT email, nro FROM proposta_de_correcao ORDER BY email, nro ASC;";
+                            $result = $db->prepare($sql);
+                            $result->execute();
+                            $db = null;
+
+                            $info = makeArray($result);
+                            echo("<select name='info'>\n");
+                            foreach ($info as $row) {
+                                $info = json_encode(array("email" => $row['email'], "nro" => $row['nro']));
+                                echo("<option value=".$info.">".$row['email']." --> ".$row['nro']."</option>\n");
+                            }
+                            echo("</select>\n"); 
+                        ?> 
+                    </td>       
 	        	</tr>
                 <tr>
 	        		<td>Novo texto da proposta de correção:</td>
@@ -34,8 +46,10 @@
         </form>
 
         <?php
-        	if (isset($_POST['email']) && isset($_POST['nro']) && isset($_POST['texto'])) {
-            	editPropCorrecao($_POST['email'], $_POST['nro'], $_POST['texto']);
+        	if (isset($_POST['info']) && isset($_POST['texto'])) {
+                $email = json_decode($_POST['info'], true)['email'];
+                $nro = json_decode($_POST['info'], true)['nro'];
+            	editPropCorrecao($email, $nro, $_POST['texto']);
         	}
         ?>
     </body>
