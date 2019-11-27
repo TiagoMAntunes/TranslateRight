@@ -4,7 +4,7 @@
     <p>Selecione os 2 locais pretendidos:</p>
 
     <?php
-        include 'lib/dbconnect.php';
+        include 'lib/aux.php';
         $db = database_connect();
 
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
@@ -26,38 +26,62 @@
             //Using JSON encoding
             echo '<select name="localA">';
             foreach ($locals as $row) {
-                echo "<option value='{ \"lat\": ", $row['latitude'], ", \"lon\": ", $row['longitude'], "}'>", $row['nome'], "</option>";
+                echo "<option value='{ \"lat\": ".$row['latitude'].", \"lon\": ".$row['longitude'], "}'>(".$row['latitude'].", ".$row['longitude'].") | ".$row['nome']."</option>";
             }
             echo '</select>';
 
             echo '<select name="localB">';
             foreach ($locals as $row) {
-                echo "<option value='{ \"lat\": ", $row['latitude'], ", \"lon\": ", $row['longitude'], "}'>", $row['nome'], "</option>";
+                echo "<option value='{ \"lat\": ".$row['latitude'].", \"lon\": ".$row['longitude'], "}'>(".$row['latitude'].", ".$row['longitude'].") | ".$row['nome']."</option>";
             }
             echo '</select>';
 
             echo '<button action="submit" >Listar</button>';
             echo '</form>';
+
         } else {
             //List all the problems
-            echo "<p>A: ", $_POST['localA'], "</p>";
-            echo "<p>B: ", $_POST['localB'], "</p>";
-
             $localA = json_decode($_POST['localA'], true);
             $localB = json_decode($_POST['localB'], true);
 
-            $sql = "SELECT * FROM local_publico WHERE latitude BETWEEN :latA AND :latB AND longitude BETWEEN :lonA AND :lonB;";
-            $result = $db->prepare($sql);
-            $result->execute(array(':latA' => $localA['lat'], ':latB' => $localB['lat'], ':lonA' => $localA['lon'], 'lonB' => $localB['lon']));
-            
-            echo ("<table border=\"1\">\n");
-            echo ("<tr><td>Nome</td></tr>\n");
-            foreach ($result as $row) {
-                echo ("<tr>\n");
-                echo ("<td>{$row['nome']}</td>\n");
-                echo ("</tr>\n");
+            $minLat = $localA['lat'];
+            $maxLat = $localB['lat'];
+            if ($minLat > $maxLat) {
+                $auxLat = $maxLat;
+                $maxLat = $minLat;
+                $minLat = $auxLat;
             }
-            echo ("</table>\n");
+
+            $minLon = $localA['lon'];
+            $maxLon = $localB['lon'];
+             if ($minLon > $maxLon) {
+                $auxLon = $maxLon;
+                $maxLon = $minLon;
+                $minLon = $auxLon;
+            }
+
+            $db->beginTransaction();
+            $sql = "WITH placesBetween AS (
+                        SELECT latitude, longitude
+                        FROM local_publico 
+                        WHERE latitude BETWEEN ? AND ? AND longitude BETWEEN ? AND ?
+                    ), itemsBetween AS (
+                        SELECT id
+                        FROM item 
+                        NATURAL JOIN placesBetween
+                    )
+                    SELECT a.id, a.zona, a.imagem, a.lingua, a.ts, a.descricao, a.tem_anomalia_traducao, at. zona2, at.lingua2
+                    FROM anomalia a
+                    LEFT JOIN anomalia_traducao at
+                    ON a.id = at.id
+                    INNER JOIN incidencia inc 
+                    ON a.id = inc.anomalia_id
+                    WHERE inc.item_id IN (SELECT id FROM itemsBetween);";
+
+            $result = $db->prepare($sql);
+            $result->execute(array($minLat, $maxLat, $minLon, $maxLon));
+            
+            displayAnomalias($result);
         }
     ?>
     <p></p>

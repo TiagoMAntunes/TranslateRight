@@ -123,7 +123,7 @@ CREATE TABLE proposta_de_correcao (		-- Beware of IC_7
 	
 	FOREIGN KEY(email)
 		REFERENCES utilizador_qualificado
-		ON DELETE CASCADE,		-- <- verify
+		ON DELETE CASCADE,		
 	PRIMARY KEY(email, nro)
 );
 
