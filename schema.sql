@@ -118,12 +118,12 @@ CREATE TABLE proposta_de_correcao (		-- Beware of IC_7
 	email varchar(120) NOT NULL,
 	nro integer NOT NULL,
 	data_hora timestamp NOT NULL,
-	texto varchar(1024) NOT NULL, 	-- It's possible to edit
+	texto varchar(1024) NOT NULL, 	
 	CHECK(nro >= 0),
 	
 	FOREIGN KEY(email)
-		REFERENCES utilizador
-		ON DELETE SET NULL,		-- <- verify
+		REFERENCES utilizador_qualificado
+		ON DELETE CASCADE,		-- <- verify
 	PRIMARY KEY(email, nro)
 );
 
