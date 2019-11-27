@@ -8,7 +8,9 @@
         $sql = "SELECT * FROM anomalia a LEFT JOIN anomalia_traducao at ON a.id = at.id ORDER BY a.id ASC;";
         $result = $db->prepare($sql);
         $result->execute();
+        $db = null;
     	displayAnomalias($result);
+
     ?>
 
     <h2>Inserir Proposta de Correção:</h2>
@@ -20,11 +22,42 @@
             </tr>
             <tr>
                 <td>Email do utilizador</td>
-                <td><input type="text" name="email" maxlength="120" required></td>
+                <td>
+                    <?php
+                        $db = database_connect();
+                        $sql = "SELECT email FROM utilizador_qualificado ORDER BY email ASC;";
+                        $result = $db->prepare($sql);
+                        $result->execute();
+                        $db = null;
+
+                        $emails = makeArray($result);
+                        echo("<select name='email'>\n");
+                        foreach ($emails as $row) {
+                            echo("<option value='{ \"email\": \"".$row['email']."\"}'>".$row['email']."</option>\n");
+                        }
+                        echo("</select>\n");
+
+                    ?>
+                </td>
             </tr>
             <tr>
                 <td>ID da anomalia a corrigir</td>
-                <td><input type="number" step="1" name="id" placeholder="id" required></td>
+                <td>
+                    <?php
+                        $db = database_connect();
+                        $sql = "SELECT id, ts FROM anomalia ORDER BY id ASC;";
+                        $result = $db->prepare($sql);
+                        $result->execute();
+                        $db = null;
+
+                        $anoms = makeArray($result);
+                        echo("<select name='anom'>\n");
+                        foreach ($anoms as $row) {
+                            echo("<option value='{ \"id\": ".$row['id']."}'>".$row['id']." | ".$row['ts']."</option>\n");
+                        }
+                        echo("</select>\n");
+                    ?>
+                </td>
             </tr>
             <tr>
                 <td>Texto da correção</td>
@@ -38,12 +71,12 @@
     </form>
 
     <?php
-        if (isset($_POST["email"]) && isset($_POST["id"]) && isset($_POST["texto"])) {
-            $email = $_POST['email'];
-            $id = $_POST['id'];
+        if (isset($_POST["email"]) && isset($_POST["anom"]) && isset($_POST["texto"])) {
+            $email = json_decode($_POST['email'], true)['email'];
+            $anom = json_decode($_POST['anom'], true)['id'];
             $text = $_POST['texto'];
  
-            addPropCorrecao($email, $id, $text);
+            addPropCorrecao($email, $anom, $text);
         }
     ?>
 </body>

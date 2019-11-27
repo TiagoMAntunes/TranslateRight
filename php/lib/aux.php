@@ -13,31 +13,11 @@
 		return isBetween($lat, $minLatitude, $maxLatitude) && isBetween($lon, $minLongitude, $maxLongitude);
 	}
 
-	function anomaliaExists($db, $id){
-		$sql = "SELECT id FROM anomalia
-				WHERE id=?;";
-		$result = $db->prepare($sql);
-		$data = array($id);
-		$result->execute($data);
-
-		return $result->rowCount() > 0;
-	}
-
 	function propCorrecaoExists($db, $email, $nro){
 		$sql = "SELECT * FROM proposta_de_correcao
 				WHERE email=? AND nro=?;";
 		$result = $db->prepare($sql);
 		$data = array($email, $nro);
-		$result->execute($data);
-
-		return $result->rowCount() > 0;
-	}
-
-	function isQualifiedUser($db, $email){
-		$sql = "SELECT email FROM utilizador_qualificado
-				WHERE email=?;";
-		$result = $db->prepare($sql);
-		$data = array($email);
 		$result->execute($data);
 
 		return $result->rowCount() > 0;
@@ -238,23 +218,6 @@
         }
 	}
 
-	function hasDuplicates($lat, $lon) {
-		$db = database_connect();
-		$sql = "SELECT id FROM item WHERE latitude=? AND longitude=? ORDER BY id DESC;";
-		$result = $db->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
-		$data = array($lat, $lon);
-		$result->execute($data);
-
-		$inserted_id = $result->fetch(PDO::FETCH_NUM)[0];
-		while ($row = $result->fetch(PDO::FETCH_NUM, PDO::FETCH_ORI_NEXT)) {
-			$sql = "INSERT INTO duplicado(item1, item2) VALUES(?, ?);";
-			$result = $db->prepare($sql);
-			$data = array($row[0], $inserted_id);
-			$result->execute($data);
-		}
-		$db = null;
-	}
-
 	function addItem($desc, $loc, $lat, $lon) {
 		if (validCoordinates($lat, $lon)) {
             try {
@@ -265,7 +228,6 @@
                 $data = array($desc, $loc, $lat, $lon);
                 $result->execute($data);
                 $db = null;
-                //hasDuplicates($lat, $lon);
 
                 echo("<p>Item inserido com êxito!\n</p>");
             }
@@ -422,7 +384,7 @@
 	}
 
 	function addPropCorrecao($email, $id, $text){
-		try{
+		try {
 			$db = database_connect();
 			$count = getNro($db, $email);
 
@@ -436,30 +398,19 @@
 	}
 
 	function insertPropCorrecao($db, $email, $count, $id, $text){
-		if(isQualifiedUser($db, $email)){
-			if(anomaliaExists($db, $id)){
-				$sql = "INSERT INTO proposta_de_correcao(email, nro, data_hora, texto)
-						VALUES (?, ?, ?, ?);";
-				$result = $db->prepare($sql);
-				$data = array($email, $count, date("Y-m-d H:i:s"), $text);
-				$result->execute($data);
-					
-				$sql = "INSERT INTO correcao(email, nro, anomalia_id)
-						VALUES (?, ?, ?);";
-				$result = $db->prepare($sql);
-				$data = array($email, $count, $id);
-				$result->execute($data);
+		$sql = "INSERT INTO proposta_de_correcao(email, nro, data_hora, texto)
+				VALUES (?, ?, ?, ?);";
+		$result = $db->prepare($sql);
+		$data = array($email, $count, date("Y-m-d H:i:s"), $text);
+		$result->execute($data);
+			
+		$sql = "INSERT INTO correcao(email, nro, anomalia_id)
+				VALUES (?, ?, ?);";
+		$result = $db->prepare($sql);
+		$data = array($email, $count, $id);
+		$result->execute($data);
 
-				echo("<p>Proposta de correção adicionada com êxito!\n</p>");
-			}
-
-			else{
-				echo("<p>Não existe nenhuma anomalia com o ID ".$id.".</p>\n");
-			}
-		}
-		else{
-			echo("<p>Não existe nenhum Utilizador Certificado com o email ".$email.".</p>\n");
-		}
+		echo("<p>Proposta de correção adicionada com êxito!\n</p>");
 	}
 
 	function removePropCorrecao($email, $nro){
