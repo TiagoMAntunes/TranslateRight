@@ -10,19 +10,25 @@
             $result = $db->prepare($sql);
             $result->execute();
         	displayPropostasCorrecao($result);
+            $db = null;
         ?>
         <p>Inserir email e nro da proposta de correção a remover:</p>
         <form action="" method="post">
-        	<table>
-	        	<tr>
-	        		<td>Email:</td>
-	        		<td><input type="text" name="email" maxlength="120" required></td>
-	        	</tr>
-                <tr>
-	        		<td>Nro:</td>
-	        		<td><input type="number" step="1" name="nro" required></td>
-	        	</tr>
-	        </table>
+            <?php
+                $db = database_connect();
+                $sql = "SELECT email, nro FROM proposta_de_correcao ORDER BY email, nro ASC;";
+                $result = $db->prepare($sql);
+                $result->execute();
+                $db = null;
+
+                $info = makeArray($result);
+                echo("<select name='info'>\n");
+                foreach ($info as $row) {
+                    $info = json_encode(array("email" => $row['email'], "nro" => $row['nro']));
+                    echo("<option value=".$info.">".$row['email']." --> ".$row['nro']."</option>\n");
+                }
+                echo("</select>\n"); 
+            ?>        
 	        <input type="submit" value="Remover">
 		</form>
         <form action="menu.php">
@@ -30,8 +36,9 @@
         </form>
 
         <?php
-        	if (isset($_POST['email']) && isset($_POST['nro'])) {
-            	removePropCorrecao($_POST['email'], $_POST['nro']);
+        	if (isset($_POST['info'])) {
+                $info = json_decode($_POST['info'], true);
+            	removePropCorrecao($info['email'], $info['nro']);
         	}
         ?>
     </body>

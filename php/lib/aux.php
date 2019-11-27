@@ -386,10 +386,12 @@
 	function addPropCorrecao($email, $id, $text){
 		try {
 			$db = database_connect();
+			$db->beginTransaction();
 			$count = getNro($db, $email);
 
 			insertPropCorrecao($db, $email, $count, $id, $text);
 
+			$db->commit();
 			$db = null;
 		}
 		catch (PDOException $e) {
@@ -415,21 +417,19 @@
 
 	function removePropCorrecao($email, $nro){
 		try {
+			echo($email);
 			$db = database_connect();
+			$db->beginTransaction();
 			$sql = "DELETE FROM proposta_de_correcao 
 					WHERE email = ? AND nro = ?;";
 			$result = $db->prepare($sql);
 			$data = array($email, $nro);
 			$result->execute($data);
 			
-			if ($result->rowCount() == 0) {
-				echo("<p>Não existe nenhuma Proposta de Correção com o email ".$email." e o nro ".$nro.".</p>\n");
-			}
-			else {
-				refreshNros($db, $email);
-				echo("<p>Proposta de Correção removida com êxito.</p>\n");
-			}
+			refreshNros($db, $email);
+			echo("<p>Proposta de Correção removida com êxito.</p>\n");
 
+			$db->commit();
 			$db = null;
 		}
 		catch(PDOException $e) {
@@ -439,11 +439,13 @@
 
 	function refreshNros($db, $email){
 		$count = getNro($db, $email);
+		echo($email);
 		$i = 1;
 		$nro = 1;
-
+		echo($count);
 		while($i <= $count){
 			if(propCorrecaoExists($db, $email, $i)){
+				echo "here";
 				$sql = "UPDATE proposta_de_correcao 
 						SET nro = ?
 						WHERE email = ? AND nro = ?;";
