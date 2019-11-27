@@ -12,7 +12,23 @@
         	<table>
 	        	<tr>
 	        		<td>ID:</td>
-	        		<td><input type="number" step="1" name="id" required></td>
+	        		<td>
+                        <?php
+                            $db = database_connect();
+                            $sql = "SELECT id FROM item;";
+                            $result = $db->prepare($sql);
+                            $result->execute();
+
+                            $result = makeArray($result);
+                            echo("<select name='id'>\n");
+                            foreach ($result as $row) {
+                                echo("<option value=".$row['id'].">".$row['id']."</option>\n");
+                            }
+                            echo("</select>\n");
+
+                            $db = null
+                        ?>         
+                    </td>
 	        	</tr>
 	        </table>
 	        <input type="submit" value="Remover">
@@ -22,8 +38,6 @@
         </form>
 
         <?php
-        	include 'lib/aux.php';
-
         	if (isset($_POST['id'])) {
             	removeItem($_POST['id']);
         	}

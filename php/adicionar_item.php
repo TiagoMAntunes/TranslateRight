@@ -18,12 +18,26 @@
                 <td><input type="text"  name="localizacao" required></td>
             </tr>
             <tr>
-                <td>Latitude</td>
-                <td><input type="number" step="0.000001" name="latitude" required></td>
-            </tr>
-            <tr>
-                <td>Longitude</td>
-                <td><input type="number" step="0.000001" name="longitude" required></td>
+                <td>Local</td>
+                <td>
+                    <?php
+                        include "lib/aux.php";
+                        $db = database_connect();
+                        $sql = "SELECT * FROM local_publico;";
+                        $result = $db->prepare($sql);
+                        $result->execute();
+
+                        $result = makeArray($result);
+                        echo("<select name='info'>\n");
+                        foreach ($result as $row) {
+                            $info = json_encode(array("lat" => $row['latitude'], "lon" => $row['longitude']));
+                            echo("<option value=".$info.">(".$row['latitude'].", ".$row['longitude'].") | ".$row['nome']."</option>\n");
+                        }
+                        echo("</select>\n");
+
+                        $db = null;
+                    ?>
+                </td>
             </tr>
         </table>
         <input type="submit" value="Inserir">
@@ -33,12 +47,10 @@
     </form>
     
     <?php
-        include 'lib/aux.php';
-        include 'lib/dbconnect.php';
-
-        if (isset($_POST["latitude"]) && isset($_POST["longitude"]) && isset($_POST["descricao"]) && isset($_POST['localizacao'])) {
-            $lat = sprintf("%.6f", $_POST["latitude"]);
-            $lon = sprintf("%.6f", $_POST["longitude"]);
+        if (isset($_POST["info"]) && isset($_POST["descricao"]) && isset($_POST['localizacao'])) {
+            $info = json_decode($_POST['info'], true);
+            $lat = sprintf("%.6f", $info['lat']);
+            $lon = sprintf("%.6f", $info['lon']);
             $desc = $_POST["descricao"];
             $loc = $_POST["localizacao"];
 
