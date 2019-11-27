@@ -5,7 +5,12 @@
     <?php
        	include 'lib/aux.php';
         $db = database_connect();
-        $sql = "SELECT * FROM anomalia a LEFT JOIN anomalia_traducao at ON a.id = at.id ORDER BY a.id ASC;";
+        $sql_aux = "SELECT anomalia_id from incidencia";
+        $sql = "SELECT * FROM anomalia a 
+                LEFT JOIN anomalia_traducao at 
+                ON a.id = at.id 
+                WHERE a.id IN ($sql_aux)
+                ORDER BY a.id ASC;";
         $result = $db->prepare($sql);
         $result->execute();
         $db = null;
