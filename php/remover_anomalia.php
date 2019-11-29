@@ -6,7 +6,7 @@
         <?php
        	 	include 'lib/aux.php';
             $db = database_connect();
-            $sql = "SELECT * FROM anomalia a LEFT JOIN anomalia_traducao at ON a.id = at.id ORDER BY a.id ASC;";
+            $sql = "SELECT a.id, zona, imagem, lingua, ts, descricao, tem_anomalia_traducao, at.zona2, at.lingua2 FROM anomalia a LEFT JOIN anomalia_traducao at ON a.id = at.id ORDER BY a.id ASC;";
             $result = $db->prepare($sql);
             $result->execute();
         	displayAnomalias($result);
