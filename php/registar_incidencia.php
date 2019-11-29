@@ -81,17 +81,24 @@
 
 	            $email = json_decode($_POST['email'], true);
 	            $item = json_decode($_POST['item'], true);
-	            $anom = json_decode($_POST['anom'], true);
+				$anom = json_decode($_POST['anom'], true);
+				
+				if($email != null && $item != null && $anom != null){
+					$sql = "INSERT INTO incidencia(anomalia_id, item_id, email) VALUES (?, ?, ?);";
+					
+					$result = $db->prepare($sql);
+	       			$data = array($anom['id'], $item['id'], $email['email']);
+					$result->execute($data);
+					
+					echo("<p>Incidência inserida com êxito.</p>\n");
+				}
 	            
-	      		$sql = "INSERT INTO incidencia(anomalia_id, item_id, email) VALUES (?, ?, ?);";
-
-	       		$result = $db->prepare($sql);
-	       		$data = array($anom['id'], $item['id'], $email['email']);
-	       		$result->execute($data);
+	      		else{
+					echo("<p>Impossível registar incidência com campos em falta.</p>\n");
+				}
 
 	       		$db = null;
 
-	       		echo("<p>Incidência inserida com êxito.</p>\n");
 	       	}
 	    }
        	catch (PDOException $e) {

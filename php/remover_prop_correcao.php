@@ -39,7 +39,7 @@
         	if (isset($_POST['info'])) {
                 $info = json_decode($_POST['info'], true);
             	removePropCorrecao($info['email'], $info['nro']);
-        	}
+            }
         ?>
     </body>
 </html>
