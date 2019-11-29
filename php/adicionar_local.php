@@ -31,7 +31,6 @@
     
     <?php
         include 'lib/aux.php';
-        include 'lib/dbconnect.php';
 
         if (isset($_POST["latitude"]) && isset($_POST["longitude"]) && isset($_POST["nome"])) {
             $lat = sprintf("%.6f", $_POST["latitude"]);
