@@ -78,9 +78,14 @@
 		        		$maxID = $aux;
 		        	}
 
-		        	if ($minID == $maxID) {
+		        	if ($minID == $maxID && $minID != null) {
 		        		echo("<p>Um item não pode ser duplicado de si prório. Tente outra vez.</p>\n");
-		        	}
+					}
+					
+					if ($minID == null) {
+		        		echo("<p>Impossível registar duplicado com campos em falta.</p>\n");
+					}
+					
 		        	else {
 		        		$sql = "INSERT INTO duplicado(item1, item2)
 		        				VALUES (?, ?);";
