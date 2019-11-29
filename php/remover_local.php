@@ -4,7 +4,14 @@
         <h2>Remover Local:</h2>
 
         <?php
-       	 	include 'lib/aux.php';
+                include 'lib/aux.php';
+                if (isset($_POST['info'])) {
+                    $info = json_decode($_POST['info'], true);
+                    $lat = sprintf("%.6f", $info['lat']);
+                    $lon = sprintf("%.6f", $info['lon']);
+    
+                    removeLocal($lat, $lon);
+                }
         	displayLocais();
         ?>
         <p>Inserir coordenadas de local a remover:</p>
@@ -30,15 +37,5 @@
         <form action="menu.php">
         	<input type="submit" value="Menu">
         </form>
-
-        <?php
-        	if (isset($_POST['info'])) {
-                $info = json_decode($_POST['info'], true);
-        		$lat = sprintf("%.6f", $info['lat']);
-            	$lon = sprintf("%.6f", $info['lon']);
-
-            	removeLocal($lat, $lon);
-        	}
-        ?>
     </body>
 </html>
