@@ -3,19 +3,13 @@
     <h1>Translate Right</h1>
 
     <?php
-       	include 'lib/aux.php';
+        include 'lib/aux.php';
+
         $db = database_connect();
-        $sql_aux = "SELECT anomalia_id from incidencia";
-        $sql = "SELECT * FROM anomalia a 
-                LEFT JOIN anomalia_traducao at 
-                ON a.id = at.id 
-                WHERE a.id IN ($sql_aux)
-                ORDER BY a.id ASC;";
+        $sql = "SELECT a.id, zona, imagem, lingua, ts, descricao, tem_anomalia_traducao, at.zona2, at.lingua2 FROM anomalia a LEFT JOIN anomalia_traducao at ON a.id = at.id ORDER BY a.id ASC;";
         $result = $db->prepare($sql);
         $result->execute();
-        $db = null;
-    	displayAnomalias($result);
-
+        displayAnomalias($result);
     ?>
 
     <h2>Inserir Proposta de Correção:</h2>
