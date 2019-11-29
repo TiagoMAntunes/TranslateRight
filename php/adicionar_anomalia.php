@@ -79,7 +79,6 @@
 
     <?php
         include 'lib/aux.php';
-        include 'lib/dbconnect.php';
 
         if (isset($_POST["imagem"]) && isset($_POST["lingua"]) && isset($_POST["descricao"])) {
             $zona = formatZona($_POST["x1"], $_POST["y1"], $_POST["x2"], $_POST["y2"]);
