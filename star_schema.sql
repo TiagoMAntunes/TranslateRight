@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS
 
 CREATE TABLE d_utilizador (
 	id_utilizador serial,
+    email varchar(120),
 	tipo varchar(50) NOT NULL,
 	PRIMARY KEY(id_utilizador)
 );
@@ -41,7 +42,6 @@ CREATE TABLE d_local (
 CREATE TABLE d_lingua (
     id_lingua serial,
     lingua varchar(120),
-    pais varchar(120),
     PRIMARY KEY(id_lingua)
 );
 
