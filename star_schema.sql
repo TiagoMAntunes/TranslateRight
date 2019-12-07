@@ -45,7 +45,7 @@ CREATE TABLE d_lingua (
     PRIMARY KEY(id_lingua)
 );
 
-/* f_anomalia(id_ulizador, id_tempo, id_local, id_lingua, po_nomalia, com_proposta)
+/* f_anomalia(id_ulizador, id_tempo, id_local, id_lingua, tipo_nomalia, com_proposta)
 - id_ulizador: FK(d_ulizador)
 - id_tempo: FK(d_tempo)
 - id_local: FK (d_local)
@@ -56,6 +56,8 @@ CREATE TABLE f_anomalia(
     id_tempo integer NOT NULL,
     id_local integer NOT NULL,
     id_lingua integer NOT NULL,
+    tipo_nomalia boolean NOT NULL,
+    com_proposta boolean NOT NULL,
 
     FOREIGN KEY(id_utilizador)
 		REFERENCES d_utilizador
