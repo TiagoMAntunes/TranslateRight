@@ -56,8 +56,8 @@ CREATE TABLE f_anomalia(
     id_tempo integer NOT NULL,
     id_local integer NOT NULL,
     id_lingua integer NOT NULL,
-    tipo_nomalia boolean NOT NULL,
-    com_proposta boolean NOT NULL,
+    tipo_anomalia integer NOT NULL,
+    com_proposta integer NOT NULL,
 
     FOREIGN KEY(id_utilizador)
 		REFERENCES d_utilizador
@@ -71,6 +71,9 @@ CREATE TABLE f_anomalia(
     FOREIGN KEY(id_lingua)
 		REFERENCES d_lingua
 		ON DELETE CASCADE,
+
+    CHECK(tipo_anomalia = 0 OR tipo_anomalia = 1),
+    CHECK(com_proposta = 0 OR com_proposta = 1),
 
 	PRIMARY KEY(id_utilizador, id_tempo, id_local, id_lingua)
 );
