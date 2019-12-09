@@ -6,11 +6,15 @@ SELECT email, 'utilizador regular' FROM utilizador_regular;
 INSERT INTO d_utilizador(email, tipo)
 SELECT email, 'utilizador qualificado' FROM utilizador_qualificado;
 
+/* Emails devem ser apenas os que existem na BD? */
+
+
 -- id_tempo(id_tempo, dia, dia_da_semana, semana, mes, trimestre, ano)
 
 INSERT INTO d_tempo(dia, dia_da_semana, semana, mes, trimestre, ano)
-SELECT DISTINCT extract(DAY FROM ts), extract(DOW FROM ts), extract(WEEK FROM ts),
-        extract(MONTH FROM ts), extract(QUARTER FROM ts), extract(YEAR FROM ts) FROM anomalia;
+SELECT DISTINCT extract(DAY FROM tempo), extract(DOW FROM tempo), extract(WEEK FROM tempo),
+        extract(MONTH FROM tempo), extract(QUARTER FROM tempo), extract(YEAR FROM tempo) 
+FROM GENERATE_SERIES('2019-01-01 00:00'::timestamp, '2029-12-31 23:59'::timestamp, '1 day') as tempo;
 
 
 -- id_local(id_local, latude, longitude, nome)
@@ -22,6 +26,8 @@ WITH items AS (
 )
 INSERT INTO d_local(latitude, longitude, nome)
 SELECT DISTINCT latitude, longitude, localizacao FROM items;
+
+/* Latitude e longitude devem ser todos os valores possíveis? */
 
 -- id_lingua(id_lingua, lingua)
 
