@@ -61,12 +61,13 @@ INSERT INTO f_anomalia(id_utilizador, id_tempo, id_local, id_lingua, tipo_anomal
 SELECT u_id, t_id, loc_id, ling_id, tipo, com_prop
 FROM(
     SELECT DISTINCT
-        1 + round(random() * 200)::int AS u_id,
-        1 + round(random() * 4018)::int AS t_id,
-        1 + round(random() * 300)::int AS loc_id,
-        1 + round(random() * 30)::int AS ling_id,
+        1 + trunc(random() * 200)::int AS u_id,
+        1 + trunc(random() * 4018)::int AS t_id,
+        1 + trunc(random() * 300)::int AS loc_id,
+        1 + trunc(random() * 30)::int AS ling_id,
         round(random())::int AS tipo,
         round(random())::int AS com_prop
     FROM   generate_series(1, 1000) g
     LIMIT  1000
 ) random;
+
