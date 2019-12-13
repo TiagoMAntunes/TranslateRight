@@ -1,0 +1,1 @@
+SELECT tipo, lingua, dia_da_semana, count(*) AS n_anomalias  FROM f_anomalia  NATURAL JOIN d_utilizador  NATURAL JOIN d_tempo   NATURAL JOIN d_lingua  GROUP BY CUBE (tipo, lingua, dia_da_semana);
